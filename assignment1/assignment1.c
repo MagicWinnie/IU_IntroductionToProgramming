@@ -6,7 +6,7 @@
 #define L 101 // max length of a name + \0
 #define DEBUG 0
 
-int cmp(const void *p1, const void *p2);
+void bubblesort(char names[][2 * L], int length);
 
 int main()
 {
@@ -32,6 +32,7 @@ int main()
     int num_lines = 0;
     while (fgets(buf, 2 * L, inp))
     {
+        // remove newline char
         buf[strcspn(buf, "\n")] = 0;
         if (strlen(buf) >= 1)
         {
@@ -39,7 +40,7 @@ int main()
             num_lines++;
         }
     }
-    // check that actual number of lines = n
+    // check that actual number of lines == n
     if (num_lines != n)
     {
         if (DEBUG)
@@ -73,8 +74,8 @@ int main()
             }
         }
     }
-    // qsort names
-    qsort(names, n, sizeof(names[0]), cmp);
+    // bubble sort names
+    bubblesort(names, n);
     // print names
     for (int i = 0; i < n; i++)
         fprintf(out, "%s\n", names[i]);
@@ -86,7 +87,25 @@ int main()
     return 0;
 }
 
-int cmp(const void *p1, const void *p2)
+void bubblesort(char names[][2 * L], int length)
 {
-    return strcmp(p1, p2);
+    // bubble sort implementation
+    int swapped = 1, i = 0;
+    char tmp[2 * L];
+    while (swapped)
+    {
+        swapped = 0;
+        i = 0;
+        while (i < length - 1)
+        {
+            if (strcmp(names[i], names[i + 1]) > 0)
+            {
+                strcpy(tmp, names[i]);
+                strcpy(names[i], names[i + 1]);
+                strcpy(names[i + 1], tmp);
+                swapped = 1;
+            }
+            i++;
+        }
+    }
 }
