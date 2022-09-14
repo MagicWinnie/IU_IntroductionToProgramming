@@ -34,7 +34,7 @@ int main()
     {
         // remove newline char
         buf[strcspn(buf, "\n")] = 0;
-        if (strlen(buf) >= 1)
+        if (strlen(buf) >= 1)// && strlen(buf) <= 100)
         {
             strcpy(names[num_lines], buf);
             num_lines++;
