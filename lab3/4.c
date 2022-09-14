@@ -20,18 +20,13 @@ int main()
             count[(int)str[i]]++;
     }
     char unique[MAX_SIZE];
-    int ind = 0;
     for (int i = 0; i < n; i++)
     {
         char tmp[2] = "\0";
         tmp[0] = str[i];
         if (!strstr(unique, tmp) && ((ONLY_ALPHA && isalpha(str[i])) || !ONLY_ALPHA))
-        {
-            unique[ind] = str[i];
-            ind++;
-        }
+            strcat(unique, tmp);
     }
-    unique[ind] = '\0';
     qsort(unique, strlen(unique), sizeof(char), cmp);
     if (HIST_TYPE)
     {

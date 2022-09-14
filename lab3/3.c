@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #define MAX_SIZE 128
-#define HIST_TYPE 1 // 0 -- vertical; 1 -- horizontal
+#define HIST_TYPE 0 // 0 -- vertical; 1 -- horizontal
 #define ONLY_ALPHA 1 // 0 -- all chars; 1 -- only alpha
 
 int main()
@@ -18,18 +18,13 @@ int main()
             count[(int)str[i]]++;
     }
     char unique[MAX_SIZE];
-    int ind = 0;
     for (int i = 0; i < n; i++)
     {
         char tmp[2] = "\0";
         tmp[0] = str[i];
         if (!strstr(unique, tmp) && ((ONLY_ALPHA && isalpha(str[i])) || !ONLY_ALPHA))
-        {
-            unique[ind] = str[i];
-            ind++;
-        }
+            strcat(unique, tmp);
     }
-    unique[ind] = '\0';
     if (HIST_TYPE)
     {
         for (int i = 0; i < strlen(unique); i++)
