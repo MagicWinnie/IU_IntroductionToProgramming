@@ -20,5 +20,6 @@ int main()
     }
     printf("\n");
     free(arr);
+    free(freq);
     return 0;
 }
