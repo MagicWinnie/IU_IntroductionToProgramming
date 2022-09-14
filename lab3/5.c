@@ -8,7 +8,7 @@ int main()
 {
     char passwd[N], guess[N] = "\0";
     printf("password = ");
-    gets(passwd);
+    fgets(passwd, N, stdin);
 
     int n = END - START + 1 + 1;
     char alphabet[n];

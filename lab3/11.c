@@ -4,7 +4,7 @@
 int main()
 {
     char str[MAX_SIZE], new_str[MAX_SIZE];
-    gets(str);
+    fgets(str, MAX_SIZE, stdin);
     
     char *ptr = str;
     char *new_ptr = new_str;

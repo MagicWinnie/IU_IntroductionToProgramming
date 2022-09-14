@@ -9,7 +9,7 @@
 int main()
 {
     char str[MAX_SIZE];
-    gets(str);
+    fgets(str, MAX_SIZE, stdin);
     int n = strlen(str);
     int count[128] = {0};
     for (int i = 0; i < n; i++)
