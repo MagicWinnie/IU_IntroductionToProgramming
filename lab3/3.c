@@ -56,6 +56,7 @@ int main()
             else
                 do_task = 0;
         }
+        printf("\n");
     }
     else
     {
