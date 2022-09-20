@@ -12,7 +12,7 @@ int cmp(const void *a, const void *b);
 int main()
 {
     char str[MAX_SIZE];
-    gets(str);
+    fgets(str, MAX_SIZE, stdin);
     int n = strlen(str);
     for (int i = 0; i < n; i++)
     {
@@ -20,18 +20,13 @@ int main()
             count[(int)str[i]]++;
     }
     char unique[MAX_SIZE];
-    int ind = 0;
     for (int i = 0; i < n; i++)
     {
         char tmp[2] = "\0";
         tmp[0] = str[i];
         if (!strstr(unique, tmp) && ((ONLY_ALPHA && isalpha(str[i])) || !ONLY_ALPHA))
-        {
-            unique[ind] = str[i];
-            ind++;
-        }
+            strcat(unique, tmp);
     }
-    unique[ind] = '\0';
     qsort(unique, strlen(unique), sizeof(char), cmp);
     if (HIST_TYPE)
     {
@@ -59,6 +54,7 @@ int main()
             else
                 do_task = 0;
         }
+        printf("\n");
     }
     else
     {
