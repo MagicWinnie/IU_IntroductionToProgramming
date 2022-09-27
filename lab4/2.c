@@ -1,17 +1,11 @@
 #include <stdio.h>
 #define MAX_LEN 128
 
-struct exam_day
-{
-    int day, year;
-    char month[MAX_LEN];
-};
-
 struct student
 {
     char name[MAX_LEN], surname[MAX_LEN];
     int group_number;
-    struct exam_day exam;
+    struct {int day, year; char month[MAX_LEN];} exam;
 };
 
 int main()
