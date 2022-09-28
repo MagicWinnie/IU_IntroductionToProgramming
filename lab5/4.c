@@ -1,23 +1,16 @@
 #include <stdio.h>
 #include <string.h>
-#define MAX_SIZE 128
 
-struct INGREDIENT
+typedef struct
 {
-    char name[MAX_SIZE];
-    int amount;
-};
-
-struct RECIPE
-{
-    char name[MAX_SIZE];
+    char name[128];
     int amount_ingredients;
-    struct INGREDIENT ingredients[10];
-};
+    struct { char name[128]; int amount; } ingredients[10];
+} RECIPE;
 
 int main()
 {
-    struct RECIPE cookbook[3];
+    RECIPE cookbook[3];
 
     /////// RECIPE #1 ///////
     strcpy(cookbook[0].name, "tea");

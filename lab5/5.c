@@ -2,39 +2,39 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum role
+typedef enum
 {
     STUDENT,
     TA,
     PROFESSOR
-};
+} role;
 
-enum degree
+typedef enum
 {
     SECONDARY,
     BACHELOR,
     MASTER,
     PHD
-};
+} degree;
 
-struct moodle_member
+typedef struct
 {
     char name[128];
-    enum degree dg;
-    enum role rl;
-};
+    degree dg;
+    role rl;
+} moodle_member;
 
 int main()
 {
     int n;
     printf("How many members do you want to enter? ");
     scanf("%d", &n);
-    struct moodle_member *members = (struct moodle_member *)malloc(sizeof(struct moodle_member) * n);
+    moodle_member *members = (moodle_member *)malloc(sizeof(moodle_member) * n);
     for (int i = 0; i < n; i++)
     {
         char name[128];
-        enum role rl;
-        enum degree dg;
+        role rl;
+        degree dg;
         printf("Enter name: ");
         scanf("%s", name);
         printf("Enter degree: ");
@@ -51,14 +51,14 @@ int main()
         {
             if (members[i].rl > members[j].rl || (members[i].rl == members[j].rl && members[i].dg > members[j].dg) || (members[i].rl == members[j].rl && members[i].dg == members[j].dg && strcmp(members[i].name, members[j].name) > 0))
             {
-                struct moodle_member tmp = members[i];
+                moodle_member tmp = members[i];
                 members[i] = members[j];
                 members[j] = tmp;
             }
         }
     }
     for (int i = 0; i < n; i++)
-        printf("Name: %s, Degree: %d, Role: %d\n", members[i].name, members[i].dg, members[i].rl);
+        printf("Name: %s\tDegree: %d\tRole: %d\n", members[i].name, members[i].dg, members[i].rl);
     free(members);
     return 0;
 }
