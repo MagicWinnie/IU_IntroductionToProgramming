@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-enum WEEK
+typedef enum
 {
     MONDAY = 1,
     TUESDAY,
@@ -9,11 +9,11 @@ enum WEEK
     FRIDAY,
     SATURDAY,
     SUNDAY
-};
+} WEEK;
 
 int main()
 {
-    enum WEEK wk;
+    WEEK wk;
     printf("Enter week number: ");
     scanf("%d", &wk);
     switch (wk)
