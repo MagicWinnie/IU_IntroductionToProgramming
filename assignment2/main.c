@@ -37,7 +37,7 @@ int main()
     {
         char name[MAX_LEN];
         fscanf(inp, "%s\n", name);
-        check_number(strlen(name), 1, 20); // to teachers: why lower bound is 1 and not 2 as in the problem ???
+        check_number(strlen(name), 2, 20);
         check_string(name);
 
         for (int j = 0; j < i; j++)
@@ -58,7 +58,7 @@ int main()
     {
         char name[MAX_LEN];
         fscanf(inp, "%s\n", name);
-        check_number(strlen(name), 1, 20); // to teachers: why lower bound is 1 and not 2 as in the problem ???
+        check_number(strlen(name), 2, 20);
         check_string(name);
 
         if (return_player_index_by_name(name, players, i) != -1)
