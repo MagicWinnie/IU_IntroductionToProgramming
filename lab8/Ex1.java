@@ -1,11 +1,19 @@
 import java.util.Scanner;
 
+/**
+ * Main class.
+ */
 public class Ex1 {
+    protected Ex1() {
+    }
+    /**
+     * Main method.
+     * @param args program args
+     */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         StringBuilder str = new StringBuilder();
-        while (true)
-        {
+        while (true) {
             System.out.println("[0] - exit");
             System.out.println("[1] - print current string");
             System.out.println("[2] - append the string");
@@ -14,40 +22,33 @@ public class Ex1 {
             System.out.println("[5] - delete substring from the current string");
             System.out.println("[6] - replace substring in the current string");
             int command = sc.nextInt();
-            if (command == 1)
+            if (command == 1) {
                 System.out.println(str);
-            else if (command == 2)
-            {
+            } else if (command == 2) {
                 System.out.print("Enter string: ");
                 String s = sc.next();
                 str.append(s);
-            }
-            else if (command == 3)
-            {
+            } else if (command == 3) {
                 System.out.print("Enter offset string: ");
                 int offset = sc.nextInt();
                 String s = sc.next();
                 str.insert(offset, s);
-            }
-            else if (command == 4)
+            } else if (command == 4) {
                 str.reverse();
-            else if (command == 5)
-            {
+            } else if (command == 5) {
                 System.out.print("Enter start end: ");
                 int start = sc.nextInt();
                 int end = sc.nextInt();
                 str.delete(start, end);
-            }
-            else if (command == 6)
-            {
+            } else if (command == 6) {
                 System.out.print("Enter start end string: ");
                 int start = sc.nextInt();
                 int end = sc.nextInt();
                 String s = sc.next();
                 str.replace(start, end, s);
-            }
-            else 
+            } else {
                 break;
+            }
         }
         sc.close();
     }

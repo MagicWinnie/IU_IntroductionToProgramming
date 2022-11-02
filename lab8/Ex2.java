@@ -1,44 +1,80 @@
 import java.util.Scanner;
 
 public class Ex2 {
+    protected Ex2() {
+    }
     public enum Money {
+        /**
+         * Money denominations.
+         */
         ONE(1), TWO(2), THREE(3), FOUR(4), FIVE(5);
+        /**
+         * Money denomination.
+         */
         private final int denomination;
-        Money(int denomination)
-        {
-            this.denomination = denomination;
+        Money(int newDenomination) {
+            this.denomination = newDenomination;
         }
-        public int getDenomination()
-        {
+        /**
+         * Get denomination.
+         * @return money
+         */
+        public int getDenomination() {
             return this.denomination;
         }
     }
     public enum Drinks {
+        /**
+         * Drinks.
+         */
         COCA_COLA("Coca-Cola", 3), SPRITE("Sprite", 7), FANTA("Fanta", 4);
+        /**
+         * Drink name.
+         */
         private final String name;
+        /**
+         * Drink price.
+         */
         private final int price;
-        Drinks(String name, int price)
-        {
-            this.name = name;
-            this.price = price;
+        /**
+         * Drink constructor.
+         * @param newName
+         * @param newPrice
+         */
+        Drinks(String newName, int newPrice) {
+            this.name = newName;
+            this.price = newPrice;
         }
-        public String getName()
-        {
+        /**
+         * Get name.
+         * @return name
+         */
+        public String getName() {
             return this.name;
         }
-        public int getPrice()
-        {
+        /**
+         * Get price.
+         * @return price
+         */
+        public int getPrice() {
             return this.price;
         }
     }
-    public static void printMenu()
-    {
+    /**
+     * Print menu.
+     */
+    public static void printMenu() {
         System.out.println("[1] - Coca-Cola");
         System.out.println("[2] - Sprite");
         System.out.println("[3] - Fanta");
     }
-    public static Drinks returnDrink(int val) throws Exception
-    {
+    /**
+     * Return drink enum.
+     * @param val
+     * @return Drink enum
+     * @throws Exception
+     */
+    public static Drinks returnDrink(int val) throws Exception {
         Drinks drink;
         switch (val) {
             case 1:
@@ -57,8 +93,13 @@ public class Ex2 {
         System.out.println("It costs $" + drink.getPrice());
         return drink;
     }
-    public static Money returnMoney(int val) throws Exception
-    {
+    /**
+     * This method returns money.
+     * @param val money value
+     * @return Money enum
+     * @throws Exception
+     */
+    public static Money returnMoney(int val) throws Exception {
         Money money;
         switch (val) {
             case 1:
@@ -81,28 +122,34 @@ public class Ex2 {
         }
         return money;
     }
-    public static void printAskMoney(int end, int start)
-    {
+    /**
+     * Print ask money text.
+     * @param end
+     * @param start
+     */
+    public static void printAskMoney(int end, int start) {
         System.out.println("Please insert $" + (end - start));
     }
+    /**
+     * Main method.
+     * @param args
+     */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         printMenu();
         Drinks drink;
-        while (true)
-        {
+        while (true) {
             try {
                 drink = returnDrink(sc.nextInt());
                 break;
-            } 
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
         }
-        int money_total = 0;
-        while (money_total < drink.getPrice())
+        int moneyTotal = 0;
+        while (moneyTotal < drink.getPrice())
         {
-            printAskMoney(drink.getPrice(), money_total);
+            printAskMoney(drink.getPrice(), moneyTotal);
             Money money;
             try {
                 money = returnMoney(sc.nextInt());
@@ -111,9 +158,9 @@ public class Ex2 {
                 System.out.println(ex.getMessage());
                 continue;
             }
-            money_total += money.getDenomination();
+            moneyTotal += money.getDenomination();
         }
-        int moneyToReturn = money_total - drink.getPrice();
+        int moneyToReturn = moneyTotal - drink.getPrice();
         while (moneyToReturn > 0)
         {
             if (moneyToReturn > 4)

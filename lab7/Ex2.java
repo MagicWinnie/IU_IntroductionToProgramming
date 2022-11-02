@@ -2,36 +2,52 @@ import java.util.Locale;
 import java.util.Scanner;
 
 class Author {
-    private String name, email;
+    /**
+     * Author name.
+     */
+    private String name;
+    /**
+     * Author email.
+     */
+    private String email;
+    /**
+     * Author gender.
+     */
     private char gender;
 
-    public Author(String name, String email, char gender) {
-        this.name = name;
-        this.email = email;
-        this.gender = gender;
+    /**
+     * Author constructor.
+     * @param newName author name
+     * @param newEmail author email
+     * @param newGender author gender
+     */
+    Author(String newName, String newEmail, char newGender) {
+        this.name = newName;
+        this.email = newEmail;
+        this.gender = newGender;
     }
 
-    public void SetName(String name) {
-        this.name = name;
+    public void setName(String newName) {
+        this.name = newName;
     }
 
-    public void SetEmail(String email) {
-        this.email = email;
+    public void setEmail(String newEmail) {
+        this.email = newEmail;
     }
 
-    public void SetGender(char gender) {
-        this.gender = gender;
+    public void setGender(char newGender) {
+        this.gender = newGender;
     }
 
-    public String GetName() {
+    public String getName() {
         return name;
     }
 
-    public String GetEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public char GetGender() {
+    public char getGender() {
         return gender;
     }
 
@@ -42,22 +58,34 @@ class Author {
 }
 
 class Book {
+    /**
+     * Book name.
+     */
     private String name;
+    /**
+     * Book author.
+     */
     private Author author;
+    /**
+     * Book price.
+     */
     private double price;
+    /**
+     * Book quantity.
+     */
     private int qty = 0;
 
-    public Book(String name, Author author, double price) {
-        this.name = name;
-        this.author = author;
-        this.price = price;
+    Book(String newName, Author newAuthor, double newPrice) {
+        this.name = newName;
+        this.author = newAuthor;
+        this.price = newPrice;
     }
 
-    public Book(String name, Author author, double price, int qty) {
-        this.name = name;
-        this.author = author;
-        this.price = price;
-        this.qty = qty;
+    Book(String newName, Author newAuthor, double newPrice, int newQty) {
+        this.name = newName;
+        this.author = newAuthor;
+        this.price = newPrice;
+        this.qty = newQty;
     }
 
     public String getName() {
@@ -72,16 +100,16 @@ class Book {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPrice(double newPrice) {
+        this.price = newPrice;
     }
 
     public int getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
-        this.qty = qty;
+    public void setQty(int newQty) {
+        this.qty = newQty;
     }
 
     @Override
@@ -91,9 +119,12 @@ class Book {
 }
 
 class Library {
+    /**
+     * Book array.
+     */
     private Book[] library;
 
-    public Library(int size) {
+    Library(int size) {
         library = new Book[size];
     }
 
@@ -112,25 +143,32 @@ class Library {
     @Override
     public String toString() {
         String output = "Library[";
-        for (int i = 0; i < library.length - 1; i++)
+        for (int i = 0; i < library.length - 1; i++) {
             output += library[i] + ",";
+        }
         output += library[library.length - 1] + "]";
         return output;
     }
 }
 
 public class Ex2 {
+    protected Ex2() {
+
+    }
+    /**
+     * Main method.
+     * @param args program args
+     */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in).useLocale(Locale.ENGLISH);
         System.out.print("Enter number of books: ");
         int n = sc.nextInt();
         Library lib = new Library(n);
-        for (int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; i++) {
             System.out.print("Enter book name: ");
-            String book_name = sc.next();
+            String bookName = sc.next();
             System.out.print("Enter author name: ");
-            String author_name = sc.next();
+            String authorName = sc.next();
             System.out.print("Enter email: ");
             String email = sc.next();
             System.out.print("Enter gender (f/m): ");
@@ -140,8 +178,8 @@ public class Ex2 {
             System.out.print("Enter qty: ");
             int qty = sc.nextInt();
 
-            Author at = new Author(author_name, email, gender);
-            Book bk = new Book(book_name, at, price, qty);
+            Author at = new Author(authorName, email, gender);
+            Book bk = new Book(bookName, at, price, qty);
             lib.setBook(i, bk);
         }
         System.out.println(lib);

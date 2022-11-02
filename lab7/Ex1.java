@@ -1,60 +1,67 @@
 import java.util.Scanner;
 
 /**
- * Simple calculator implementation
+ * Simple calculator implementation.
  */
 class Calculator {
     /**
-     * This method checks whether numbers are positive
-     * @param _a First number
-     * @param _b Second number
+     * This method checks whether numbers are positive.
+     * @param a First number
+     * @param b Second number
      */
-    private void check_numbers(int _a, int _b)
-    {
-        if (_a >= 0 && _b >= 0)
+    private void checkNumbers(int a, int b) {
+        if (a >= 0 && b >= 0) {
             return;
+        }
         throw new ArithmeticException("Calculator accepts only positive integers");
     }
     /**
-     * This method checks whether the operator is implemented
-     * @param _op Operator
+     * This method checks whether the operator is implemented.
+     * @param op Operator
      */
-    private void check_operator(char _op)
-    {
-        if ("+-*/".indexOf(_op) != -1)
+    private void checkOperator(char op) {
+        if ("+-*/".indexOf(op) != -1) {
             return;
+        }
         throw new ArithmeticException("Calculator accepts only +, -, * and /");
     }
     /**
-     * Performs operations depending on _op
-     * @param _a First number
-     * @param _b Second number
-     * @param _op Operator
+     * Performs operations depending on op.
+     * @param a First number
+     * @param b Second number
+     * @param op Operator
      */
-    public void calculate(int _a, int _b, char _op)
-    {
-        check_numbers(_a, _b);
-        check_operator(_op);
+    public void calculate(int a, int b, char op) {
+        checkNumbers(a, b);
+        checkOperator(op);
 
-        if (_op == '+')
-            System.out.println(_a + _b);
-        else if (_op == '-')
-            System.out.println(_a - _b);
-        else if (_op == '*')
-            System.out.println(_a * _b);
-        else
-            if (_b == 0)
+        if (op == '+') {
+            System.out.println(a + b);
+        } else if (op == '-') {
+            System.out.println(a - b);
+        } else if (op == '*') {
+            System.out.println(a * b);
+        } else {
+            if (b == 0) {
                 System.out.println(-1);
-            else 
-                System.out.println((float)_a / _b);
+            } else {
+                System.out.println((float) a / b);
+            }
+        }
     }
 }
 
+/**
+ * Main class.
+ */
 public class Ex1 {
+    protected Ex1() {
+
+    }
     /**
-     * Main method that reads numbers and operator
+     * Main method that reads numbers and operator.
      * @param args Array of strings containing parameters
-     */    
+     */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Calculator calc = new Calculator();
