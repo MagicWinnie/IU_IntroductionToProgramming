@@ -17,14 +17,17 @@ public class Main {
      * Calculator object with default calculator.
      */
     private Calculator calc;
+    /**
+     * Input scanner.
+     */
+    private Scanner scanner;
 
     /**
      * This method reads the operand types and parses them.
-     * @param scanner java util scanner
      * @return operand type that has been read
      */
-    private CalculatorType readCalculator(Scanner scanner) {
-        String type = scanner.nextLine(); // read calculator type
+    private CalculatorType readCalculator() {
+        String type = this.scanner.nextLine(); // read calculator type
         CalculatorType calcType;
         switch (type) {
             case "DOUBLE":
@@ -49,13 +52,12 @@ public class Main {
 
     /**
      * This method reads amount of commands.
-     * @param scanner java util scanner
      * @return number of commands
      */
-    private int readCommandsNumber(Scanner scanner) {
+    private int readCommandsNumber() {
         int n = 0;
         try {
-            n = scanner.nextInt();
+            n = this.scanner.nextInt();
         } catch (NumberFormatException ex) {
             this.reportFatalError("Amount of commands is Not a Number");
         } catch (InputMismatchException ex) {
@@ -105,12 +107,11 @@ public class Main {
 
     /**
      * This method reads command line and processes it.
-     * @param scanner java util scanner
      */
-    private void calculate(Scanner scanner) {
-        String command = scanner.next();
-        String operand1 = scanner.next();
-        String operand2 = scanner.next();
+    private void calculate() {
+        String command = this.scanner.next();
+        String operand1 = this.scanner.next();
+        String operand2 = this.scanner.next();
         OperationType operType = this.parseOperation(command);
         switch (operType) {
             case ADDITION:
@@ -136,14 +137,14 @@ public class Main {
      * @param args execution arguments
      */
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         Main my = new Main();
-        my.readCalculator(scanner);
-        int n = my.readCommandsNumber(scanner);
+        my.scanner = new Scanner(System.in);
+        my.readCalculator();
+        int n = my.readCommandsNumber();
         for (int i = 0; i < n; i++) {
-            my.calculate(scanner);
+            my.calculate();
         }
-        scanner.close();
+        my.scanner.close();
     }
 }
 
