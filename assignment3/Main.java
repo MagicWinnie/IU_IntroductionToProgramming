@@ -117,7 +117,7 @@ public class Main {
                 System.out.println(calc.add(operand1, operand2));
                 break;
             case SUBTRACTION:
-                System.out.println(calc.substract(operand1, operand2));
+                System.out.println(calc.subtract(operand1, operand2));
                 break;
             case MULTIPLICATION:
                 System.out.println(calc.multiply(operand1, operand2));
@@ -212,7 +212,7 @@ abstract class Calculator {
      * @param b String for operand 2.
      * @return Returns a string, that is a result of a + b or error message if unsupported.
      */
-    public abstract String substract(String a, String b);
+    public abstract String subtract(String a, String b);
     /**
      * This method calculates result of a * b.
      * @param a String for operand 1.
@@ -279,7 +279,7 @@ class IntegerCalculator extends Calculator {
         int result = operand1 + operand2;
         return Integer.toString(result);
     }
-    public String substract(String a, String b) {
+    public String subtract(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
         }
@@ -324,7 +324,7 @@ class DoubleCalculator extends Calculator {
         double result = operand1 + operand2;
         return Double.toString(result);
     }
-    public String substract(String a, String b) {
+    public String subtract(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
         }
@@ -363,7 +363,7 @@ class StringCalculator extends Calculator {
     public String add(String a, String b) {
         return a + b;
     }
-    public String substract(String a, String b) {
+    public String subtract(String a, String b) {
         return "Unsupported operation for strings";
     }
     public String multiply(String a, String b) {
