@@ -1,3 +1,4 @@
+// import packages
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -14,7 +15,7 @@ public class Main {
      */
     private final int nUpperBound = 50;
     /**
-     * Calculator object with default calculator.
+     * Calculator object.
      */
     private Calculator calc;
     /**
@@ -75,6 +76,7 @@ public class Main {
      */
     private void reportFatalError(String err) {
         System.out.println(err);
+        this.scanner.close();
         System.exit(0);
     }
 
@@ -106,7 +108,7 @@ public class Main {
     }
 
     /**
-     * This method reads command line and processes it.
+     * This method reads a command line and processes it.
      */
     private void calculate() {
         String command = this.scanner.next();
@@ -137,14 +139,14 @@ public class Main {
      * @param args execution arguments
      */
     public static void main(String[] args) {
-        Main my = new Main();
-        my.scanner = new Scanner(System.in);
-        my.readCalculator();
-        int n = my.readCommandsNumber();
+        Main my = new Main(); // create an instance of ourself
+        my.scanner = new Scanner(System.in); // assign a new scanner
+        my.readCalculator(); // read calculator type
+        int n = my.readCommandsNumber(); // read number of commands
         for (int i = 0; i < n; i++) {
-            my.calculate();
+            my.calculate(); // read line and calculate the result
         }
-        my.scanner.close();
+        my.scanner.close(); // close the scanner
     }
 }
 
@@ -271,6 +273,7 @@ abstract class Calculator {
  * Class for integer calculator.
  */
 class IntegerCalculator extends Calculator {
+    @Override
     public String add(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
@@ -280,6 +283,7 @@ class IntegerCalculator extends Calculator {
         int result = operand1 + operand2;
         return Integer.toString(result);
     }
+    @Override
     public String subtract(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
@@ -289,6 +293,7 @@ class IntegerCalculator extends Calculator {
         int result = operand1 - operand2;
         return Integer.toString(result);
     }
+    @Override
     public String multiply(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
@@ -298,6 +303,7 @@ class IntegerCalculator extends Calculator {
         int result = operand1 * operand2;
         return Integer.toString(result);
     }
+    @Override
     public String divide(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
@@ -316,6 +322,7 @@ class IntegerCalculator extends Calculator {
  * Class for double calculator.
  */
 class DoubleCalculator extends Calculator {
+    @Override
     public String add(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
@@ -325,6 +332,7 @@ class DoubleCalculator extends Calculator {
         double result = operand1 + operand2;
         return Double.toString(result);
     }
+    @Override
     public String subtract(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
@@ -334,6 +342,7 @@ class DoubleCalculator extends Calculator {
         double result = operand1 - operand2;
         return Double.toString(result);
     }
+    @Override
     public String multiply(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
@@ -343,6 +352,7 @@ class DoubleCalculator extends Calculator {
         double result = operand1 * operand2;
         return Double.toString(result);
     }
+    @Override
     public String divide(String a, String b) {
         if (!this.isNumber(a) || !this.isNumber(b)) {
             return "Wrong argument type";
@@ -361,22 +371,27 @@ class DoubleCalculator extends Calculator {
  * Class for string calculator.
  */
 class StringCalculator extends Calculator {
+    @Override
     public String add(String a, String b) {
         return a + b;
     }
+    @Override
     public String subtract(String a, String b) {
         return "Unsupported operation for strings";
     }
+    @Override
     public String multiply(String a, String b) {
         if (!isInteger(b) || (isInteger(b) && Integer.parseInt(b) < 1)) {
             return "Wrong argument type";
         }
+        // repeat string b times
         String s = "";
         for (int i = 0; i < Integer.parseInt(b); i++) {
             s += a;
         }
         return s;
     }
+    @Override
     public String divide(String a, String b) {
         return "Unsupported operation for strings";
     }
