@@ -14,12 +14,13 @@ public class Ex2 {
         String raw_str = "";
         try {
             in = new FileInputStream(inputFileName);
-            byte[] buffer = in.readAllBytes();
-            raw_str = new String(buffer);
+            raw_str = new String(new byte[in.available()]);
         } catch (FileNotFoundException ex) {
-            System.out.println("[WARNING] Input file not found. Writing empty output file.");
+            System.out.println("[ERROR] Input file not found.");
+            System.exit(-1);
         } catch (IOException ex) {
-            System.out.println("[WARNING] Input file has read-only permission. Writing empty output file.");
+            System.out.println("[ERROR] No permission to read input file.");
+            System.exit(-1);
         }
         double a = 0, b = 0;
         try {
@@ -27,6 +28,9 @@ public class Ex2 {
             b = Double.parseDouble(raw_str.split(" ")[1]);
         } catch (NumberFormatException ex) {
             System.out.println("[ERROR] One of the inputs is not a number.");
+            System.exit(-1);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            System.out.println("[ERROR] Not enough numbers.");
             System.exit(-1);
         }
         if (b == 0.0d) {

@@ -22,13 +22,13 @@ public class Ex1 {
         } catch (FileNotFoundException ex) {
             System.out.println("[WARNING] Input file not found. Writing empty output file.");
         } catch (IOException ex) {
-            System.out.println("[WARNING] Input file has read-only permission. Writing empty output file.");
+            System.out.println("[WARNING] No permission to read the input file. Writing empty output file.");
         }
         try {
             out = new FileOutputStream(outputFileName);
             out.write(buffer, 0, buffer.length);
         } catch (IOException ex) {
-            System.out.println("[ERROR] Output file has read-only permission.");
+            System.out.println("[ERROR] Cannot create an output file.");
             System.exit(-1);
         }
     }
