@@ -11,24 +11,30 @@ public class Ex4 {
             System.out.println("[ERROR] Not enough arguments. Help: java Ex1 file_url output_directory");
             System.exit(-1);
         }
+        URL url = null;
         try {
-            URL url = new URL(args[0]);
-            String fileName = url.getFile();
-            String destName = args[1] + fileName.substring(fileName.lastIndexOf("/"));
-            InputStream is = url.openStream();
-            OutputStream os = new FileOutputStream(destName);
-            byte[] b = new byte[is.available()];
+            url = new URL(args[0]);
+        } catch (MalformedURLException ex) {
+            System.out.println("[ERROR] Bad URL.");
+            System.exit(-1);
+        }
+        String fileName = url.getFile();
+        String destName = args[1] + fileName.substring(fileName.lastIndexOf("/"));
+        InputStream is = null;
+        OutputStream os = null;
+        byte[] b = null;
+        try {
+            is = url.openStream();
+            os = new FileOutputStream(destName);
+            b = new byte[is.available()];
             int length;
             while ((length = is.read(b)) != -1) {
                 os.write(b, 0, length);
             }
             is.close();
             os.close();
-        } catch (MalformedURLException ex) {
-            System.out.println("[ERROR] Bad URL.");
-            System.exit(-1);
         } catch (IOException ex) {
-            System.out.println("[ERROR] Unexpected error.");
+            System.out.println("[ERROR] Error while working with streams.");
             System.exit(-1);
         }
     }
