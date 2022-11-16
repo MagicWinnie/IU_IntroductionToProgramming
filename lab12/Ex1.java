@@ -19,6 +19,7 @@ public class Ex1 {
             in = new FileInputStream(inputFileName);
             buffer = new byte[in.available()];
             in.read(buffer, 0, buffer.length);
+            in.close();
         } catch (FileNotFoundException ex) {
             System.out.println("[WARNING] Input file not found. Writing empty output file.");
         } catch (IOException ex) {
@@ -27,6 +28,7 @@ public class Ex1 {
         try {
             out = new FileOutputStream(outputFileName);
             out.write(buffer, 0, buffer.length);
+            out.close();
         } catch (IOException ex) {
             System.out.println("[ERROR] Cannot create an output file.");
             System.exit(-1);
