@@ -90,14 +90,14 @@ public class Main {
                 chessPiece = new Knight(position, color);
                 break;
             case "Rook":
-            chessPiece = new Rook(position, color);
-            break;
+                chessPiece = new Rook(position, color);
+                break;
             case "Queen":
-            chessPiece = new Queen(position, color);
-            break;
+                chessPiece = new Queen(position, color);
+                break;
             case "Bishop":
-            chessPiece = new Bishop(position, color);
-            break;
+                chessPiece = new Bishop(position, color);
+                break;
             default:
                 throw new InvalidPieceNameException();
         }
@@ -113,9 +113,7 @@ public class Main {
         int n = 0;
         int m = 0;
         try {
-            writer = new BufferedWriter(
-                    new OutputStreamWriter(
-                            new FileOutputStream("output.txt")));
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("output.txt")));
         } catch (FileNotFoundException exception0) {
             return;
         }
@@ -143,6 +141,13 @@ public class Main {
                 writer.close();
             } catch (IOException ex) {
                 return; // exiting with finally running
+            }
+            return;
+        } catch (Exception exx) {
+            try {
+                writer.write("Invalid input");
+            } catch (IOException exxx) {
+                return;
             }
             return;
         } finally {
