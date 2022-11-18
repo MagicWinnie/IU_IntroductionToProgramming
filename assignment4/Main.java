@@ -49,11 +49,56 @@ public class Main {
      */
     private static Writer writer = null;
 
+    private void reportFatalError(String err) {
+        try {
+            if (writer != null) {
+                writer.write(err + "\n");
+                writer.close();
+            }
+            if (scanner != null) {
+                scanner.close();
+            }
+        } catch (IOException ex) {
+        } finally {
+            System.exit(0);
+        }
+    }
+
+    private void openFile(String path, String opcode) {
+        try {
+            if (opcode.equals("w")) {
+                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path)));
+            } else if (opcode.equals("r")) {
+                scanner = new Scanner(new File(path));
+            }
+        } catch (FileNotFoundException exception) {
+            return; // placeholder, we think that these files always exists
+        }
+    }
+
+    private void writeFile(String text) {
+        try {
+            writer.write(text);
+        } catch (IOException exception) {
+            return; // placeholder, we think that we always can write
+        }
+    }
+
+    private void closeFile() {
+        try {
+            if (writer != null) {
+                writer.close();
+            }
+        } catch (IOException ex) {
+            return; // placeholder, we think that we always can close file
+        }
+    }
+
     private int readN() throws InvalidBoardSizeException {
         int n;
         try {
             n = scanner.nextInt();
-        } catch (NumberFormatException | InputMismatchException exception) {
+        } catch (NumberFormatException exception) {
             throw new InvalidBoardSizeException();
         }
         if (n < lowerN || n > upperN) {
@@ -67,7 +112,7 @@ public class Main {
         int m;
         try {
             m = scanner.nextInt();
-        } catch (NumberFormatException | InputMismatchException exception) {
+        } catch (NumberFormatException exception) {
             throw new InvalidNumberOfPiecesException();
         }
         if (m < lowerM || m > this.boardSize * this.boardSize) {
@@ -116,7 +161,7 @@ public class Main {
         try {
             x = scanner.nextInt();
             y = scanner.nextInt();
-        } catch (NumberFormatException | InputMismatchException exception) {
+        } catch (NumberFormatException exception) {
             throw new InvalidPiecePositionException();
         }
         if (x < lowerCoord || x > this.boardSize) {
@@ -135,20 +180,20 @@ public class Main {
         Main main = new Main();
         int n = 0;
         int m = 0;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("output.txt")));
-        } catch (FileNotFoundException exception0) {
-            return;
-        }
-        try {
-            scanner = new Scanner(new File("input.txt"));
-        } catch (FileNotFoundException exception1) {
-            return;
-        }
+        main.openFile("input.txt", "r");
+        main.openFile("output.txt", "w");
         try {
             n = main.readN();
+        } catch (InvalidBoardSizeException exception) {
+            main.reportFatalError(exception.getMessage());
+        }
+        try {
             m = main.readM();
-            chessBoard = new Board(n);
+        } catch (InvalidNumberOfPiecesException exception) {
+            main.reportFatalError(exception.getMessage());
+        }
+        chessBoard = new Board(n);
+        try {
             for (int i = 0; i < m; i++) {
                 ChessPiece chessPiece = main.readChessPiece();
                 chessBoard.addPiece(chessPiece);
@@ -156,38 +201,17 @@ public class Main {
             if (main.numberOfKings != 2) {
                 throw new InvalidGivenKingsException();
             }
-        } catch (InvalidBoardSizeException | InvalidNumberOfPiecesException
-                | InvalidPieceNameException | InvalidPieceColorException
-                | InvalidPiecePositionException | InvalidGivenKingsException exception2) {
-            try {
-                writer.write(exception2.getMessage() + "\n");
-                writer.close();
-            } catch (IOException ex) {
-                return; // exiting with finally running
-            }
-            return;
-        } catch (Exception exx) {
-            try {
-                writer.write("Invalid input\n");
-                writer.close();
-            } catch (IOException exxx) {
-                return;
-            }
-            return;
-        } finally {
-            scanner.close();
+        } catch (InvalidPieceNameException | InvalidPieceColorException
+                | InvalidPiecePositionException | InvalidGivenKingsException exception) {
+            main.reportFatalError(exception.getMessage());
         }
-        try {
-            for (Map.Entry<String, ChessPiece> mapElement : chessBoard.getPiecePositions()) {
-                ChessPiece chessPiece = mapElement.getValue();
-                int piecePossibleMoves = chessBoard.getPiecePossibleMovesCount(chessPiece);
-                int piecePossibleCaptures = chessBoard.getPiecePossibleCapturesCount(chessPiece);
-                writer.write(piecePossibleMoves + " " + piecePossibleCaptures + "\n");
-            }
-            writer.close();
-        } catch (IOException exception3) {
-            return;
+        for (Map.Entry<String, ChessPiece> mapElement : chessBoard.getPiecePositions()) {
+            ChessPiece chessPiece = mapElement.getValue();
+            int piecePossibleMoves = chessBoard.getPiecePossibleMovesCount(chessPiece);
+            int piecePossibleCaptures = chessBoard.getPiecePossibleCapturesCount(chessPiece);
+            main.writeFile(piecePossibleMoves + " " + piecePossibleCaptures + "\n");
         }
+        main.closeFile();
     }
 }
 
@@ -599,64 +623,35 @@ class Pawn extends ChessPiece {
         int j = pos.getY();
         if (this.getColor() == PieceColor.WHITE) {
             j++;
-            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
-                boolean isEmpty = !positions.containsKey(i + " " + j);
-                if (isEmpty) {
-                    count++;
-                }
-            }
-            i--;
-            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
-                boolean isEmpty = !positions.containsKey(i + " " + j);
-                if (!isEmpty) {
-                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
-                    if (newPieceColor != this.color) {
-                        count++;
-                        this.capturesCount++;
-                    }
-                }
-            }
-            i++;
-            i++;
-            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
-                boolean isEmpty = !positions.containsKey(i + " " + j);
-                if (!isEmpty) {
-                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
-                    if (newPieceColor != this.color) {
-                        count++;
-                        this.capturesCount++;
-                    }
-                }
-            }
         } else {
             j--;
-            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
-                boolean isEmpty = !positions.containsKey(i + " " + j);
-                if (isEmpty) {
+        }
+        if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+            boolean isEmpty = !positions.containsKey(i + " " + j);
+            if (isEmpty) {
+                count++;
+            }
+        }
+        i--;
+        if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+            boolean isEmpty = !positions.containsKey(i + " " + j);
+            if (!isEmpty) {
+                PieceColor newPieceColor = positions.get(i + " " + j).getColor();
+                if (newPieceColor != this.color) {
                     count++;
+                    this.capturesCount++;
                 }
             }
-            i--;
-            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
-                boolean isEmpty = !positions.containsKey(i + " " + j);
-                if (!isEmpty) {
-                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
-                    if (newPieceColor != this.color) {
-                        count++;
-                        this.capturesCount++;
-                    }
-                }
-            }
-            i++;
-            i++;
-            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
-                boolean isEmpty = !positions.containsKey(i + " " + j);
-                if (!isEmpty) {
-                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
-                    if (newPieceColor != this.color) {
-                        count++;
-                        this.capturesCount++;
-                    }
+        }
+        i++;
+        i++;
+        if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+            boolean isEmpty = !positions.containsKey(i + " " + j);
+            if (!isEmpty) {
+                PieceColor newPieceColor = positions.get(i + " " + j).getColor();
+                if (newPieceColor != this.color) {
+                    count++;
+                    this.capturesCount++;
                 }
             }
         }
