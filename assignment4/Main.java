@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.InputMismatchException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -49,7 +50,12 @@ public class Main {
     private static Writer writer = null;
 
     private int readN() throws InvalidBoardSizeException {
-        int n = scanner.nextInt();
+        int n;
+        try {
+            n = scanner.nextInt();
+        } catch (NumberFormatException | InputMismatchException exception) {
+            throw new InvalidBoardSizeException();
+        }
         if (n < lowerN || n > upperN) {
             throw new InvalidBoardSizeException();
         }
@@ -58,7 +64,12 @@ public class Main {
     }
 
     private int readM() throws InvalidNumberOfPiecesException {
-        int m = scanner.nextInt();
+        int m;
+        try {
+            m = scanner.nextInt();
+        } catch (NumberFormatException | InputMismatchException exception) {
+            throw new InvalidNumberOfPiecesException();
+        }
         if (m < lowerM || m > this.boardSize * this.boardSize) {
             throw new InvalidNumberOfPiecesException();
         }
@@ -69,8 +80,14 @@ public class Main {
             InvalidPieceColorException, InvalidPiecePositionException, InvalidGivenKingsException {
         String pieceTypeString = scanner.next();
         String colorString = scanner.next();
-        int x = scanner.nextInt();
-        int y = scanner.nextInt();
+        int x;
+        int y;
+        try {
+            x = scanner.nextInt();
+            y = scanner.nextInt();
+        } catch (NumberFormatException | InputMismatchException exception) {
+            throw new InvalidPiecePositionException();
+        }
         if (x < lowerCoord || x > this.boardSize) {
             throw new InvalidPiecePositionException();
         }
@@ -145,7 +162,8 @@ public class Main {
             return;
         } catch (Exception exx) {
             try {
-                writer.write("Invalid input");
+                writer.write("Invalid input\n");
+                writer.close();
             } catch (IOException exxx) {
                 return;
             }
