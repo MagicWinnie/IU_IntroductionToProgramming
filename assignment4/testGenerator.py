@@ -1,5 +1,5 @@
 import random
-import itertools=
+import itertools
 
 f = open('input.txt', 'w')
 
