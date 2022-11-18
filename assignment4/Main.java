@@ -80,6 +80,37 @@ public class Main {
             InvalidPieceColorException, InvalidPiecePositionException, InvalidGivenKingsException {
         String pieceTypeString = scanner.next();
         String colorString = scanner.next();
+        ChessPiece chessPiece = null;
+        PieceColor color = null;
+        switch (pieceTypeString) {
+            case "Pawn":
+                color = PieceColor.parse(colorString);
+                chessPiece = new Pawn(new PiecePosition(0, 0), color);
+                break;
+            case "King":
+                color = PieceColor.parse(colorString);
+                chessPiece = new King(new PiecePosition(0, 0), color);
+                this.numberOfKings++;
+                break;
+            case "Knight":
+                color = PieceColor.parse(colorString);
+                chessPiece = new Knight(new PiecePosition(0, 0), color);
+                break;
+            case "Rook":
+                color = PieceColor.parse(colorString);
+                chessPiece = new Rook(new PiecePosition(0, 0), color);
+                break;
+            case "Queen":
+                color = PieceColor.parse(colorString);
+                chessPiece = new Queen(new PiecePosition(0, 0), color);
+                break;
+            case "Bishop":
+                color = PieceColor.parse(colorString);
+                chessPiece = new Bishop(new PiecePosition(0, 0), color);
+                break;
+            default:
+                throw new InvalidPieceNameException();
+        }
         int x;
         int y;
         try {
@@ -91,33 +122,8 @@ public class Main {
         if (x < lowerCoord || x > this.boardSize) {
             throw new InvalidPiecePositionException();
         }
-
-        ChessPiece chessPiece = null;
         PiecePosition position = new PiecePosition(x, y);
-        PieceColor color = PieceColor.parse(colorString);
-        switch (pieceTypeString) {
-            case "Pawn":
-                chessPiece = new Pawn(position, color);
-                break;
-            case "King":
-                chessPiece = new King(position, color);
-                this.numberOfKings++;
-                break;
-            case "Knight":
-                chessPiece = new Knight(position, color);
-                break;
-            case "Rook":
-                chessPiece = new Rook(position, color);
-                break;
-            case "Queen":
-                chessPiece = new Queen(position, color);
-                break;
-            case "Bishop":
-                chessPiece = new Bishop(position, color);
-                break;
-            default:
-                throw new InvalidPieceNameException();
-        }
+        chessPiece.setPosition(position);
         return chessPiece;
     }
 
@@ -270,8 +276,16 @@ abstract class ChessPiece {
         this.color = pieceColor;
     }
 
+    void setPosition(PiecePosition piecePosition) {
+        this.position = piecePosition;
+    }
+
     PiecePosition getPosition() {
         return this.position;
+    }
+
+    void setColor(PieceColor pieceColor) {
+        this.color = pieceColor;
     }
 
     PieceColor getColor() {
