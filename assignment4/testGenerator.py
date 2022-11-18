@@ -1,7 +1,5 @@
 import random
-import itertools
-from tqdm import tqdm
-
+import itertools=
 
 f = open('input.txt', 'w')
 
@@ -22,7 +20,7 @@ king2_coord = coords[index]
 index += 1
 f.write(f"King White {king2_coord[0]} {king2_coord[1]}\n")
 
-for _ in tqdm(range(m)):
+for _ in range(m):
     piece_coord = coords[index]
     index += 1
     piece_name = random.choice(('Pawn', 'Knight', 'Rook', 'Queen', 'Bishop'))

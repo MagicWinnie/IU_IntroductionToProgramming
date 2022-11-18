@@ -76,7 +76,7 @@ public class Main {
         }
 
         ChessPiece chessPiece = null;
-        Position position = new Position(x, y);
+        PiecePosition position = new PiecePosition(x, y);
         PieceColor color = PieceColor.parse(colorString);
         switch (pieceTypeString) {
             case "Pawn":
@@ -241,18 +241,18 @@ abstract class ChessPiece {
     /**
      * Coordinates of a piece.
      */
-    protected Position position;
+    protected PiecePosition position;
     /**
      * Color of a piece.
      */
     protected PieceColor color;
 
-    ChessPiece(Position positionNew, PieceColor colorNew) {
-        this.position = positionNew;
-        this.color = colorNew;
+    ChessPiece(PiecePosition piecePosition, PieceColor pieceColor) {
+        this.position = piecePosition;
+        this.color = pieceColor;
     }
 
-    Position getPosition() {
+    PiecePosition getPosition() {
         return this.position;
     }
 
@@ -266,7 +266,7 @@ abstract class ChessPiece {
 }
 
 interface BishopMovement {
-    default int getDiagonalMovesCount(Position position, PieceColor color, Map<String, ChessPiece> positions,
+    default int getDiagonalMovesCount(PiecePosition position, PieceColor color, Map<String, ChessPiece> positions,
             int boardSize) {
         int count = 0;
         int newX = 0;
@@ -295,7 +295,7 @@ interface BishopMovement {
         return count;
     }
 
-    default int getDiagonalCapturesCount(Position position, PieceColor color, Map<String, ChessPiece> positions,
+    default int getDiagonalCapturesCount(PiecePosition position, PieceColor color, Map<String, ChessPiece> positions,
             int boardSize) {
         int count = 0;
         int newX = 0;
@@ -326,7 +326,7 @@ interface BishopMovement {
 }
 
 interface RookMovement {
-    default int getOrthogonalMovesCount(Position position, PieceColor color, Map<String, ChessPiece> positions,
+    default int getOrthogonalMovesCount(PiecePosition position, PieceColor color, Map<String, ChessPiece> positions,
             int boardSize) {
         int count = 0;
         for (int i = position.getX() - 1; i >= 1; i--) {
@@ -372,7 +372,7 @@ interface RookMovement {
         return count;
     }
 
-    default int getOrthogonalCapturesCount(Position position, PieceColor color, Map<String, ChessPiece> positions,
+    default int getOrthogonalCapturesCount(PiecePosition position, PieceColor color, Map<String, ChessPiece> positions,
             int boardSize) {
         int count = 0;
         for (int i = position.getX() - 1; i >= 1; i--) {
@@ -433,7 +433,7 @@ class Knight extends ChessPiece {
      */
     private int[][] knightMoves = {{-two, -one}, {-two, one}, {two, -one}, {two, one},
         {-one, -two}, {-one, two}, {one, -two}, {one, two}};
-    Knight(Position position, PieceColor color) {
+    Knight(PiecePosition position, PieceColor color) {
         super(position, color);
     }
 
@@ -499,7 +499,7 @@ class King extends ChessPiece {
     private int[][] kingMoves = {{zero, one}, {one, one}, {one, zero}, {one, -one},
         {zero, -one}, {-one, -one}, {-one, zero}, {-one, one}};
 
-    King(Position position, PieceColor color) throws InvalidGivenKingsException {
+    King(PiecePosition position, PieceColor color) throws InvalidGivenKingsException {
         super(position, color);
         if (color == PieceColor.WHITE) {
             numberOfWhite++;
@@ -556,13 +556,13 @@ class Pawn extends ChessPiece {
      */
     private int capturesCount = 0;
 
-    Pawn(Position position, PieceColor color) {
+    Pawn(PiecePosition position, PieceColor color) {
         super(position, color);
     }
 
     public int getMovesCount(Map<String, ChessPiece> positions, int boardSize) {
         int count = 0;
-        Position pos = this.getPosition();
+        PiecePosition pos = this.getPosition();
         int i = pos.getX();
         int j = pos.getY();
         if (this.getColor() == PieceColor.WHITE) {
@@ -637,7 +637,7 @@ class Pawn extends ChessPiece {
 }
 
 class Bishop extends ChessPiece implements BishopMovement {
-    Bishop(Position position, PieceColor color) {
+    Bishop(PiecePosition position, PieceColor color) {
         super(position, color);
     }
 
@@ -651,7 +651,7 @@ class Bishop extends ChessPiece implements BishopMovement {
 }
 
 class Rook extends ChessPiece implements RookMovement {
-    Rook(Position position, PieceColor color) {
+    Rook(PiecePosition position, PieceColor color) {
         super(position, color);
     }
 
@@ -665,7 +665,7 @@ class Rook extends ChessPiece implements RookMovement {
 }
 
 class Queen extends ChessPiece implements BishopMovement, RookMovement {
-    Queen(Position position, PieceColor color) {
+    Queen(PiecePosition position, PieceColor color) {
         super(position, color);
     }
 
@@ -680,7 +680,7 @@ class Queen extends ChessPiece implements BishopMovement, RookMovement {
     }
 }
 
-class Position {
+class PiecePosition {
     /**
      * X coordinate of a piece.
      */
@@ -690,9 +690,9 @@ class Position {
      */
     private int y;
 
-    Position(int xX, int yY) {
-        this.x = xX;
-        this.y = yY;
+    PiecePosition(int onX, int onY) {
+        this.x = onX;
+        this.y = onY;
     }
 
     public int getX() {
@@ -715,7 +715,7 @@ class Board {
      * For example, you have a rook at (1, 2):
      * "1 2" -> Rook()
      */
-    private Map<String, ChessPiece> piecePositions = new LinkedHashMap<String, ChessPiece>();
+    private Map<String, ChessPiece> positionsToPieces = new LinkedHashMap<String, ChessPiece>();
     /**
      * Board size.
      */
@@ -725,32 +725,32 @@ class Board {
         this.size = boardSize;
     }
 
-    private boolean isEmpty(Position pos) {
-        return !this.piecePositions.containsKey(pos.toString());
+    private boolean isEmpty(PiecePosition pos) {
+        return !this.positionsToPieces.containsKey(pos.toString());
     }
 
     public int getPiecePossibleMovesCount(ChessPiece piece) {
-        return piece.getMovesCount(this.piecePositions, this.size);
+        return piece.getMovesCount(this.positionsToPieces, this.size);
     }
 
     public int getPiecePossibleCapturesCount(ChessPiece piece) {
-        return piece.getCapturesCount(this.piecePositions, this.size);
+        return piece.getCapturesCount(this.positionsToPieces, this.size);
     }
 
     public void addPiece(ChessPiece piece) throws InvalidPiecePositionException {
-        Position position = piece.getPosition();
+        PiecePosition position = piece.getPosition();
         if (this.isEmpty(position)) {
-            this.piecePositions.put(position.toString(), piece);
+            this.positionsToPieces.put(position.toString(), piece);
         } else {
             throw new InvalidPiecePositionException();
         }
     }
 
-    public ChessPiece getPiece(Position position) {
-        return this.piecePositions.get(position.toString());
+    public ChessPiece getPiece(PiecePosition position) {
+        return this.positionsToPieces.get(position.toString());
     }
 
     public Set<Map.Entry<String, ChessPiece>> getPiecePositions() {
-        return this.piecePositions.entrySet();
+        return this.positionsToPieces.entrySet();
     }
 }
