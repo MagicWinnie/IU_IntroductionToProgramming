@@ -286,6 +286,8 @@ interface BishopMovement {
                         } else {
                             break;
                         }
+                    } else {
+                        break;
                     }
                 }
             }
@@ -313,6 +315,8 @@ interface BishopMovement {
                         } else {
                             break;
                         }
+                    } else {
+                        break;
                     }
                 }
             }
@@ -325,27 +329,44 @@ interface RookMovement {
     default int getOrthogonalMovesCount(Position position, PieceColor color, Map<String, ChessPiece> positions,
             int boardSize) {
         int count = 0;
-        int newX = 0;
-        int newY = 0;
-        int[] mult = {0, -1, 1};
-        for (int multI : mult) {
-            for (int multJ : mult) {
-                if (multI == 0 || multJ == 0) {
-                    for (int i = 1; i <= boardSize; i++) {
-                        newX = position.getX() + multI * i;
-                        newY = position.getY() + multJ * i;
-                        if (1 <= newX && newX <= boardSize && 1 <= newY && newY <= boardSize) {
-                            if (!positions.containsKey(newX + " " + newY)) {
-                                count++;
-                            } else if (positions.get(newX + " " + newY).getColor() != color) {
-                                count++;
-                                break;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                }
+        for (int i = position.getX() - 1; i >= 1; i--) {
+            if (!positions.containsKey(i + " " + position.getY())) {
+                count++;
+            } else if (positions.get(i + " " + position.getY()).getColor() != color) {
+                count++;
+                break;
+            } else {
+                break;
+            }
+        }
+        for (int i = position.getX() + 1; i <= boardSize; i++) {
+            if (!positions.containsKey(i + " " + position.getY())) {
+                count++;
+            } else if (positions.get(i + " " + position.getY()).getColor() != color) {
+                count++;
+                break;
+            } else {
+                break;
+            }
+        }
+        for (int j = position.getY() - 1; j >= 1; j--) {
+            if (!positions.containsKey(position.getX() + " " + j)) {
+                count++;
+            } else if (positions.get(position.getX() + " " + j).getColor() != color) {
+                count++;
+                break;
+            } else {
+                break;
+            }
+        }
+        for (int j = position.getY() + 1; j <= boardSize; j++) {
+            if (!positions.containsKey(position.getX() + " " + j)) {
+                count++;
+            } else if (positions.get(position.getX() + " " + j).getColor() != color) {
+                count++;
+                break;
+            } else {
+                break;
             }
         }
         return count;
@@ -354,27 +375,44 @@ interface RookMovement {
     default int getOrthogonalCapturesCount(Position position, PieceColor color, Map<String, ChessPiece> positions,
             int boardSize) {
         int count = 0;
-        int newX = 0;
-        int newY = 0;
-        int[] mult = {0, -1, 1};
-        for (int multI : mult) {
-            for (int multJ : mult) {
-                if (multI == 0 || multJ == 0) {
-                    for (int i = 1; i <= boardSize; i++) {
-                        newX = position.getX() + multI * i;
-                        newY = position.getY() + multJ * i;
-                        if (1 <= newX && newX <= boardSize && 1 <= newY && newY <= boardSize) {
-                            if (!positions.containsKey(newX + " " + newY)) {
-                                continue;
-                            } else if (positions.get(newX + " " + newY).getColor() != color) {
-                                count++;
-                                break;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                }
+        for (int i = position.getX() - 1; i >= 1; i--) {
+            if (!positions.containsKey(i + " " + position.getY())) {
+                continue;
+            } else if (positions.get(i + " " + position.getY()).getColor() != color) {
+                count++;
+                break;
+            } else {
+                break;
+            }
+        }
+        for (int i = position.getX() + 1; i <= boardSize; i++) {
+            if (!positions.containsKey(i + " " + position.getY())) {
+                continue;
+            } else if (positions.get(i + " " + position.getY()).getColor() != color) {
+                count++;
+                break;
+            } else {
+                break;
+            }
+        }
+        for (int j = position.getY() - 1; j >= 1; j--) {
+            if (!positions.containsKey(position.getX() + " " + j)) {
+                continue;
+            } else if (positions.get(position.getX() + " " + j).getColor() != color) {
+                count++;
+                break;
+            } else {
+                break;
+            }
+        }
+        for (int j = position.getY() + 1; j <= boardSize; j++) {
+            if (!positions.containsKey(position.getX() + " " + j)) {
+                continue;
+            } else if (positions.get(position.getX() + " " + j).getColor() != color) {
+                count++;
+                break;
+            } else {
+                break;
             }
         }
         return count;
