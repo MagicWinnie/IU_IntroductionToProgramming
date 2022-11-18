@@ -429,10 +429,6 @@ class Knight extends ChessPiece {
      */
     private final int two = 2;
     /**
-     * Calculating captures count at moves to optimize.
-     */
-    private int capturesCount = 0;
-    /**
      * Knight moves array.
      */
     private int[][] knightMoves = {{-two, -one}, {-two, one}, {two, -one}, {two, one},
@@ -454,7 +450,6 @@ class Knight extends ChessPiece {
                     PieceColor newPieceColor = positions.get(i + " " + j).getColor();
                     if (newPieceColor != this.color) {
                         count++;
-                        this.capturesCount++;
                     }
                 }
             }
@@ -463,7 +458,21 @@ class Knight extends ChessPiece {
     }
 
     public int getCapturesCount(Map<String, ChessPiece> positions, int boardSize) {
-        return this.capturesCount;
+        int count = 0;
+        for (int[] is : this.knightMoves) {
+            int i = this.getPosition().getX() + is[0];
+            int j = this.getPosition().getY() + is[1];
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+                boolean isEmpty = !positions.containsKey(i + " " + j);
+                if (!isEmpty) {
+                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
+                    if (newPieceColor != this.color) {
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
     }
 }
 
@@ -484,10 +493,6 @@ class King extends ChessPiece {
      * Dealing with magic numbers.
      */
     private final int zero = 0;
-    /**
-     * Calculating captures count at moves to optimize.
-     */
-    private int capturesCount = 0;
     /**
      * Knight moves array.
      */
@@ -519,7 +524,6 @@ class King extends ChessPiece {
                     PieceColor newPieceColor = positions.get(i + " " + j).getColor();
                     if (newPieceColor != this.color) {
                         count++;
-                        this.capturesCount++;
                     }
                 }
             }
@@ -528,7 +532,21 @@ class King extends ChessPiece {
     }
 
     public int getCapturesCount(Map<String, ChessPiece> positions, int boardSize) {
-        return this.capturesCount;
+        int count = 0;
+        for (int[] is : this.kingMoves) {
+            int i = this.getPosition().getX() + is[0];
+            int j = this.getPosition().getY() + is[1];
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+                boolean isEmpty = !positions.containsKey(i + " " + j);
+                if (!isEmpty) {
+                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
+                    if (newPieceColor != this.color) {
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
     }
 }
 
