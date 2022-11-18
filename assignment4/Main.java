@@ -263,8 +263,6 @@ abstract class ChessPiece {
     public abstract int getMovesCount(Map<String, ChessPiece> positions, int boardSize);
 
     public abstract int getCapturesCount(Map<String, ChessPiece> positions, int boardSize);
-
-    public abstract boolean canMove(int i, int j);
 }
 
 interface BishopMovement {
@@ -384,30 +382,41 @@ interface RookMovement {
 }
 
 class Knight extends ChessPiece {
+    /**
+     * Dealing with magic numbers.
+     */
+    private final int one = 1;
+    /**
+     * Dealing with magic numbers.
+     */
+    private final int two = 2;
+    /**
+     * Calculating captures count at moves to optimize.
+     */
+    private int capturesCount = 0;
+    /**
+     * Knight moves array.
+     */
+    private int[][] knightMoves = {{-two, -one}, {-two, one}, {two, -one}, {two, one},
+        {-one, -two}, {-one, two}, {one, -two}, {one, two}};
     Knight(Position position, PieceColor color) {
         super(position, color);
     }
 
-    public boolean canMove(int i, int j) {
-        Position pos = this.getPosition();
-        int dx = Math.abs(pos.getX() - i);
-        int dy = Math.abs(pos.getY() - j);
-        return (dx == 2 && dy == 1) || (dx == 1 && dy == 2);
-    }
-
     public int getMovesCount(Map<String, ChessPiece> positions, int boardSize) {
         int count = 0;
-        for (int i = 1; i <= boardSize; i++) {
-            for (int j = 1; j <= boardSize; j++) {
-                if (this.canMove(i, j)) {
-                    boolean isEmpty = !positions.containsKey(i + " " + j);
-                    if (isEmpty) {
+        for (int[] is : this.knightMoves) {
+            int i = this.getPosition().getX() + is[0];
+            int j = this.getPosition().getY() + is[1];
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+                boolean isEmpty = !positions.containsKey(i + " " + j);
+                if (isEmpty) {
+                    count++;
+                } else {
+                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
+                    if (newPieceColor != this.color) {
                         count++;
-                    } else {
-                        PieceColor newPieceColor = positions.get(i + " " + j).getColor();
-                        if (newPieceColor != this.color) {
-                            count++;
-                        }
+                        this.capturesCount++;
                     }
                 }
             }
@@ -416,16 +425,7 @@ class Knight extends ChessPiece {
     }
 
     public int getCapturesCount(Map<String, ChessPiece> positions, int boardSize) {
-        int count = 0;
-        for (Map.Entry<String, ChessPiece> mapElement : positions.entrySet()) {
-            if (this.canMove(mapElement.getValue().getPosition().getX(), mapElement.getValue().getPosition().getY())) {
-                PieceColor newPieceColor = mapElement.getValue().getColor();
-                if (newPieceColor != this.color) {
-                    count++;
-                }
-            }
-        }
-        return count;
+        return this.capturesCount;
     }
 }
 
@@ -438,6 +438,23 @@ class King extends ChessPiece {
      * Number of black kings.
      */
     private static int numberOfBlack = 0;
+    /**
+     * Dealing with magic numbers.
+     */
+    private final int one = 1;
+    /**
+     * Dealing with magic numbers.
+     */
+    private final int zero = 0;
+    /**
+     * Calculating captures count at moves to optimize.
+     */
+    private int capturesCount = 0;
+    /**
+     * Knight moves array.
+     */
+    private int[][] kingMoves = {{zero, one}, {one, one}, {one, zero}, {one, -one},
+        {zero, -one}, {-one, -one}, {-one, zero}, {-one, one}};
 
     King(Position position, PieceColor color) throws InvalidGivenKingsException {
         super(position, color);
@@ -451,26 +468,20 @@ class King extends ChessPiece {
         }
     }
 
-    public boolean canMove(int i, int j) {
-        Position pos = this.getPosition();
-        int dx = Math.abs(pos.getX() - i);
-        int dy = Math.abs(pos.getY() - j);
-        return dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0);
-    }
-
     public int getMovesCount(Map<String, ChessPiece> positions, int boardSize) {
         int count = 0;
-        for (int i = 1; i <= boardSize; i++) {
-            for (int j = 1; j <= boardSize; j++) {
-                if (this.canMove(i, j)) {
-                    boolean isEmpty = !positions.containsKey(i + " " + j);
-                    if (isEmpty) {
+        for (int[] is : this.kingMoves) {
+            int i = this.getPosition().getX() + is[0];
+            int j = this.getPosition().getY() + is[1];
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+                boolean isEmpty = !positions.containsKey(i + " " + j);
+                if (isEmpty) {
+                    count++;
+                } else {
+                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
+                    if (newPieceColor != this.color) {
                         count++;
-                    } else {
-                        PieceColor newPieceColor = positions.get(i + " " + j).getColor();
-                        if (newPieceColor != this.color) {
-                            count++;
-                        }
+                        this.capturesCount++;
                     }
                 }
             }
@@ -479,44 +490,84 @@ class King extends ChessPiece {
     }
 
     public int getCapturesCount(Map<String, ChessPiece> positions, int boardSize) {
-        int count = 0;
-        for (Map.Entry<String, ChessPiece> mapElement : positions.entrySet()) {
-            if (this.canMove(mapElement.getValue().getPosition().getX(), mapElement.getValue().getPosition().getY())) {
-                PieceColor newPieceColor = mapElement.getValue().getColor();
-                if (newPieceColor != this.color) {
-                    count++;
-                }
-            }
-        }
-        return count;
+        return this.capturesCount;
     }
 }
 
 class Pawn extends ChessPiece {
+    /**
+     * Calculating captures count at moves to optimize.
+     */
+    private int capturesCount = 0;
+
     Pawn(Position position, PieceColor color) {
         super(position, color);
     }
 
-    public boolean canMove(int i, int j) {
-        Position pos = this.getPosition();
-        if (this.getColor() == PieceColor.WHITE) {
-            return (j - pos.getY() == 1) && (i == pos.getX());
-        } else {
-            return (pos.getY() - j == 1) && (i == pos.getX());
-        }
-    }
-
     public int getMovesCount(Map<String, ChessPiece> positions, int boardSize) {
         int count = 0;
-        for (int i = 1; i <= boardSize; i++) {
-            for (int j = 1; j <= boardSize; j++) {
+        Position pos = this.getPosition();
+        int i = pos.getX();
+        int j = pos.getY();
+        if (this.getColor() == PieceColor.WHITE) {
+            j++;
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
                 boolean isEmpty = !positions.containsKey(i + " " + j);
-                if (isEmpty && this.canMove(i, j)) {
+                if (isEmpty) {
                     count++;
-                } else if (!isEmpty && (this.canMove(i + 1, j) || this.canMove(i - 1, j))) {
+                }
+            }
+            i--;
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+                boolean isEmpty = !positions.containsKey(i + " " + j);
+                if (!isEmpty) {
                     PieceColor newPieceColor = positions.get(i + " " + j).getColor();
                     if (newPieceColor != this.color) {
                         count++;
+                        this.capturesCount++;
+                    }
+                }
+            }
+            i++;
+            i++;
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+                boolean isEmpty = !positions.containsKey(i + " " + j);
+                if (!isEmpty) {
+                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
+                    if (newPieceColor != this.color) {
+                        count++;
+                        this.capturesCount++;
+                    }
+                }
+            }
+        } else {
+            j--;
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+                boolean isEmpty = !positions.containsKey(i + " " + j);
+                if (isEmpty) {
+                    count++;
+                }
+            }
+            i--;
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+                boolean isEmpty = !positions.containsKey(i + " " + j);
+                if (!isEmpty) {
+                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
+                    if (newPieceColor != this.color) {
+                        count++;
+                        this.capturesCount++;
+                    }
+                }
+            }
+            i++;
+            i++;
+            if (1 <= i && i <= boardSize && 1 <= j && j <= boardSize) {
+                boolean isEmpty = !positions.containsKey(i + " " + j);
+                if (!isEmpty) {
+                    PieceColor newPieceColor = positions.get(i + " " + j).getColor();
+                    if (newPieceColor != this.color) {
+                        count++;
+                        this.capturesCount++;
                     }
                 }
             }
@@ -525,28 +576,13 @@ class Pawn extends ChessPiece {
     }
 
     public int getCapturesCount(Map<String, ChessPiece> positions, int boardSize) {
-        int count = 0;
-        for (Map.Entry<String, ChessPiece> mapElement : positions.entrySet()) {
-            Position pos = mapElement.getValue().getPosition();
-            if (this.canMove(pos.getX() + 1, pos.getY())
-                    || this.canMove(pos.getX() - 1, pos.getY())) {
-                PieceColor newPieceColor = positions.get(pos.getX() + " " + pos.getY()).getColor();
-                if (newPieceColor != this.color) {
-                    count++;
-                }
-            }
-        }
-        return count;
+        return this.capturesCount;
     }
 }
 
 class Bishop extends ChessPiece implements BishopMovement {
     Bishop(Position position, PieceColor color) {
         super(position, color);
-    }
-
-    public boolean canMove(int i, int j) {
-        throw new UnsupportedOperationException();
     }
 
     public int getMovesCount(Map<String, ChessPiece> positions, int boardSize) {
@@ -562,9 +598,6 @@ class Rook extends ChessPiece implements RookMovement {
     Rook(Position position, PieceColor color) {
         super(position, color);
     }
-    public boolean canMove(int i, int j) {
-        throw new UnsupportedOperationException();
-    }
 
     public int getMovesCount(Map<String, ChessPiece> positions, int boardSize) {
         return getOrthogonalMovesCount(this.getPosition(), this.getColor(), positions, boardSize);
@@ -578,9 +611,6 @@ class Rook extends ChessPiece implements RookMovement {
 class Queen extends ChessPiece implements BishopMovement, RookMovement {
     Queen(Position position, PieceColor color) {
         super(position, color);
-    }
-    public boolean canMove(int i, int j) {
-        throw new UnsupportedOperationException();
     }
 
     public int getMovesCount(Map<String, ChessPiece> positions, int boardSize) {
