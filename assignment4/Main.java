@@ -103,7 +103,7 @@ public class Main {
         int n;
         try {
             n = scanner.nextInt();
-        } catch (NumberFormatException exception) {
+        } catch (NumberFormatException | InputMismatchException exception) {
             throw new InvalidBoardSizeException();
         }
         if (n < lowerN || n > upperN) {
@@ -117,7 +117,7 @@ public class Main {
         int m;
         try {
             m = scanner.nextInt();
-        } catch (NumberFormatException exception) {
+        } catch (NumberFormatException | InputMismatchException exception) {
             throw new InvalidNumberOfPiecesException();
         }
         if (m < lowerM || m > this.boardSize * this.boardSize) {
@@ -126,21 +126,17 @@ public class Main {
         return m;
     }
 
-    private ChessPiece readChessPiece() throws InvalidPieceNameException, InvalidNumberOfPiecesException,
+    private ChessPiece readChessPiece() throws InvalidPieceNameException,
             InvalidPieceColorException, InvalidPiecePositionException, InvalidGivenKingsException {
         String pieceTypeString = "";
         String colorString = "";
         try {
             pieceTypeString = scanner.next();
-        } catch (InputMismatchException exception) {
-            throw new InvalidNumberOfPiecesException();
         } catch (NoSuchElementException exception) {
             throw new InvalidPieceNameException();
         }
         try {
             colorString = scanner.next();
-        } catch (InputMismatchException exception) {
-            throw new InvalidNumberOfPiecesException();
         } catch (NoSuchElementException exception) {
             throw new InvalidPieceColorException();
         }
@@ -231,6 +227,9 @@ public class Main {
             if (main.numberOfBlackKings != 1 || main.numberOfWhiteKings != 1) {
                 throw new InvalidGivenKingsException();
             }
+            if (scanner.hasNext()) {
+                throw new InvalidNumberOfPiecesException();
+            }
         } catch (InvalidPieceNameException | InvalidPieceColorException | InvalidNumberOfPiecesException
                 | InvalidPiecePositionException | InvalidGivenKingsException exception) {
             main.reportFatalError(exception.getMessage());
@@ -241,6 +240,7 @@ public class Main {
             int piecePossibleCaptures = chessBoard.getPiecePossibleCapturesCount(chessPiece);
             main.writeFile(piecePossibleMoves + " " + piecePossibleCaptures + "\n");
         }
+        scanner.close();
         main.closeFile();
     }
 }
