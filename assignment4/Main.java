@@ -126,75 +126,80 @@ public class Main {
         return m;
     }
 
-    private ChessPiece readChessPiece() throws InvalidPieceNameException,
+    private ChessPiece readChessPiece() throws InvalidPieceNameException, InvalidNumberOfPiecesException,
             InvalidPieceColorException, InvalidPiecePositionException, InvalidGivenKingsException {
+        if (!scanner.hasNext()) {
+            throw new InvalidNumberOfPiecesException();
+        }
+        boolean toThrowName = false;
+        boolean toThrowColor = false;
+        boolean toThrowPosition = false;
         String pieceTypeString = "";
         String colorString = "";
+        ChessPiece chessPiece = null;
         try {
             pieceTypeString = scanner.next();
         } catch (NoSuchElementException exception) {
-            throw new InvalidPieceNameException();
+            toThrowName = true;
         }
         try {
             colorString = scanner.next();
         } catch (NoSuchElementException exception) {
-            throw new InvalidPieceColorException();
+            toThrowColor = true;
         }
-        ChessPiece chessPiece = null;
-        PieceColor color = null;
+        int x = 0;
+        int y = 0;
+        try {
+            x = scanner.nextInt();
+            y = scanner.nextInt();
+        } catch (NumberFormatException | NoSuchElementException exception) {
+            toThrowPosition = true;
+        }
+        if (x < lowerCoord || x > this.boardSize) {
+            toThrowPosition = true;
+        }
+        PieceColor color = PieceColor.parse(colorString);
+        if (color == null) {
+            toThrowColor = true;
+        }
+        PiecePosition position = new PiecePosition(x, y);
         switch (pieceTypeString) {
             case "Pawn":
-                color = PieceColor.parse(colorString);
-                chessPiece = new Pawn(new PiecePosition(0, 0), color);
+                chessPiece = new Pawn(position, color);
                 break;
             case "King":
-                if (this.numberOfBlackKings + this.numberOfWhiteKings >= 2) {
-                    throw new InvalidGivenKingsException();
-                }
-                color = PieceColor.parse(colorString);
-                chessPiece = new King(new PiecePosition(0, 0), color);
                 if (color == PieceColor.BLACK) {
                     this.numberOfBlackKings++;
                 } else {
                     this.numberOfWhiteKings++;
                 }
+                chessPiece = new King(position, color);
                 break;
             case "Knight":
-                color = PieceColor.parse(colorString);
-                chessPiece = new Knight(new PiecePosition(0, 0), color);
+                chessPiece = new Knight(position, color);
                 break;
             case "Rook":
-                color = PieceColor.parse(colorString);
-                chessPiece = new Rook(new PiecePosition(0, 0), color);
+                chessPiece = new Rook(position, color);
                 break;
             case "Queen":
-                color = PieceColor.parse(colorString);
-                chessPiece = new Queen(new PiecePosition(0, 0), color);
+                chessPiece = new Queen(position, color);
                 break;
             case "Bishop":
-                color = PieceColor.parse(colorString);
-                chessPiece = new Bishop(new PiecePosition(0, 0), color);
+                chessPiece = new Bishop(position, color);
                 break;
             default:
-                throw new InvalidPieceNameException();
+                toThrowName = true;
         }
-        int x;
-        int y;
-        try {
-            x = scanner.nextInt();
-            y = scanner.nextInt();
-        } catch (NumberFormatException exception) {
-            throw new InvalidPiecePositionException();
-        } catch (InputMismatchException exception) {
-            throw new InvalidPiecePositionException();
-        } catch (NoSuchElementException exception) {
+        if (toThrowName) {
+            throw new InvalidPieceNameException();
+        } else if (toThrowColor) {
+            throw new InvalidPieceColorException();
+        } else if (toThrowPosition) {
             throw new InvalidPiecePositionException();
         }
-        if (x < lowerCoord || x > this.boardSize) {
-            throw new InvalidPiecePositionException();
+        if (this.numberOfBlackKings > 1 || this.numberOfWhiteKings > 1) {
+            throw new InvalidGivenKingsException();
         }
-        PiecePosition position = new PiecePosition(x, y);
-        chessPiece.setPosition(position);
         return chessPiece;
     }
 
@@ -304,13 +309,13 @@ enum PieceColor {
      */
     BLACK;
 
-    public static PieceColor parse(String color) throws InvalidPieceColorException {
+    public static PieceColor parse(String color) {
         if (color.equals("Black")) {
             return BLACK;
         } else if (color.equals("White")) {
             return WHITE;
         } else {
-            throw new InvalidPieceColorException();
+            return null;
         }
     }
 }
