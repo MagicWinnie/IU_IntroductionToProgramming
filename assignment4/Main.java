@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.InputMismatchException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -37,9 +38,13 @@ public class Main {
      */
     private int boardSize = 0;
     /**
-     * Total number of kings on board.
+     * Number of white kings on board.
      */
-    private int numberOfKings = 0;
+    private int numberOfWhiteKings = 0;
+    /**
+     * Number of black kings on board.
+     */
+    private int numberOfBlackKings = 0;
     /**
      * Static scanner instance.
      */
@@ -121,10 +126,24 @@ public class Main {
         return m;
     }
 
-    private ChessPiece readChessPiece() throws InvalidPieceNameException,
+    private ChessPiece readChessPiece() throws InvalidPieceNameException, InvalidNumberOfPiecesException,
             InvalidPieceColorException, InvalidPiecePositionException, InvalidGivenKingsException {
-        String pieceTypeString = scanner.next();
-        String colorString = scanner.next();
+        String pieceTypeString = "";
+        String colorString = "";
+        try {
+            pieceTypeString = scanner.next();
+        } catch (InputMismatchException exception) {
+            throw new InvalidNumberOfPiecesException();
+        } catch (NoSuchElementException exception) {
+            throw new InvalidPieceNameException();
+        }
+        try {
+            colorString = scanner.next();
+        } catch (InputMismatchException exception) {
+            throw new InvalidNumberOfPiecesException();
+        } catch (NoSuchElementException exception) {
+            throw new InvalidPieceColorException();
+        }
         ChessPiece chessPiece = null;
         PieceColor color = null;
         switch (pieceTypeString) {
@@ -133,9 +152,16 @@ public class Main {
                 chessPiece = new Pawn(new PiecePosition(0, 0), color);
                 break;
             case "King":
+                if (this.numberOfBlackKings + this.numberOfWhiteKings >= 2) {
+                    throw new InvalidGivenKingsException();
+                }
                 color = PieceColor.parse(colorString);
                 chessPiece = new King(new PiecePosition(0, 0), color);
-                this.numberOfKings++;
+                if (color == PieceColor.BLACK) {
+                    this.numberOfBlackKings++;
+                } else {
+                    this.numberOfWhiteKings++;
+                }
                 break;
             case "Knight":
                 color = PieceColor.parse(colorString);
@@ -162,6 +188,10 @@ public class Main {
             x = scanner.nextInt();
             y = scanner.nextInt();
         } catch (NumberFormatException exception) {
+            throw new InvalidPiecePositionException();
+        } catch (InputMismatchException exception) {
+            throw new InvalidPiecePositionException();
+        } catch (NoSuchElementException exception) {
             throw new InvalidPiecePositionException();
         }
         if (x < lowerCoord || x > this.boardSize) {
@@ -198,10 +228,10 @@ public class Main {
                 ChessPiece chessPiece = main.readChessPiece();
                 chessBoard.addPiece(chessPiece);
             }
-            if (main.numberOfKings != 2) {
+            if (main.numberOfBlackKings != 1 || main.numberOfWhiteKings != 1) {
                 throw new InvalidGivenKingsException();
             }
-        } catch (InvalidPieceNameException | InvalidPieceColorException
+        } catch (InvalidPieceNameException | InvalidPieceColorException | InvalidNumberOfPiecesException
                 | InvalidPiecePositionException | InvalidGivenKingsException exception) {
             main.reportFatalError(exception.getMessage());
         }
@@ -534,14 +564,6 @@ class Knight extends ChessPiece {
 
 class King extends ChessPiece {
     /**
-     * Number of white kings.
-     */
-    private static int numberOfWhite = 0;
-    /**
-     * Number of black kings.
-     */
-    private static int numberOfBlack = 0;
-    /**
      * Dealing with magic numbers.
      */
     private final int one = 1;
@@ -557,14 +579,6 @@ class King extends ChessPiece {
 
     King(PiecePosition position, PieceColor color) throws InvalidGivenKingsException {
         super(position, color);
-        if (color == PieceColor.WHITE) {
-            numberOfWhite++;
-        } else {
-            numberOfBlack++;
-        }
-        if (numberOfBlack > 1 || numberOfWhite > 1) {
-            throw new InvalidGivenKingsException();
-        }
     }
 
     public int getMovesCount(Map<String, ChessPiece> positions, int boardSize) {
