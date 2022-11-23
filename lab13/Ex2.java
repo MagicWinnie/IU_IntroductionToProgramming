@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.Objects;
 
 abstract class Animal {
     private String nickname;
@@ -19,7 +20,7 @@ abstract class Animal {
 
     @Override
     public int hashCode() {
-        return this.nickname.hashCode();
+        return Objects.hash(this.nickname.hashCode());
     }
 
     @Override
